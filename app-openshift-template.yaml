@@ -1,0 +1,68 @@
+kind: Template
+apiVersion: v1
+template: notebook-ws
+metadata:
+  name: notebook-ws
+objects:
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: noteboook-ws
+  spec:
+    host: notebook-ws.e8ca.engint.openshiftapps.com
+    to:
+      kind: Service
+      name: notebook-ws
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: notebook-ws
+    labels:
+      name: noteboook-ws
+  spec:
+    ports:
+      - protocol: TCP
+        port: 8080
+        targetPort: 8080
+    selector:
+      name: notebook-ws
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: notebook-ws
+  spec:
+    strategy:
+      type: Rolling
+    triggers:
+      - type: ConfigChange
+    replicas: 1
+    selector:
+      name: notebook-ws
+    template:
+      metadata:
+        labels:
+          name: notebook-ws
+      spec:
+        containers:
+          - name: notebook-ws
+            image: ${NOTEBOOK_WS_IMAGE}
+            env:
+              - name: WEB_APP_PORT
+                value: "8080"
+            ports:
+              - containerPort: 8080
+                protocol: TCP
+
+
+parameters:
+- name: NOTEBOOK_WS_IMAGE
+  description: Name of the notebook webservice image
+  value: docker.io/zmhassan/notebook-ws
+- name: NOTEBOOK_WS_NAME
+  description: master name used as a service name and a selector
+  generate: expression
+  from: "notebook-ws-[a-z0-9]{4}"
+  required: true

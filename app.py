@@ -16,7 +16,7 @@ def hello():
     
     # In[1]:
     
-    print("Testing 1 2 3 4 5...")
+    print("I love mexican food...")
     
     
     # In[ ]:
@@ -24,7 +24,7 @@ def hello():
     
     
 
-    return "Testing 1 2 3 4 5..."
+    return "I love mexican food..."
 
 
 if __name__ == "__main__":
