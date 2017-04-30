@@ -62,4 +62,4 @@ WORKDIR /opt
 
 EXPOSE 8080
 
-ENTRYPOINT ["python", "/opt/app.py"]
+ENTRYPOINT ["spark-submit", "/opt/app.py"]

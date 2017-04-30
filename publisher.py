@@ -9,19 +9,18 @@ def main():
     pa= parser.parse_args()
     print(args.notebook)
     # Converting python notebook to a python script
-    os.system("ipython nbconvert --to script notebooks/Test1.ipynb")
-    filename="notebooks/Test1.py"
+    os.system("ipython nbconvert --to script {fname} ".format(fname=args.notebook))
+
+    filename="{fname}".format(fname=args.notebook.replace("ipynb","py"))
     with open(filename) as f:
         content = f.readlines()
         codeblock='    '.join(content)
         for i, j in enumerate(content):
             if j.startswith("print"):
-                rtn=content[i].replace("print","").replace("(","").replace(")","")
-                # rtn=content[i].replace("(","")
-                # rtn=content[i].replace(")","")
+                rtn=content[i].replace("print","return")
                 print(rtn)
 
-        print()
+
 
         with open("app.py", "w") as w:
             flask="""\
@@ -39,7 +38,7 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     {msg}
-    return {rtn}
+    {rtn}
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
